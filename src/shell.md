@@ -33,6 +33,13 @@ EOF
 find . -name '*.h' -print0 | xargs -0 grep qemu_find_opts
 ```
 
+## Grep with lines before or after
+
+```
+# Show the 2 lines before the match and the line after the match.
+grep -B 2 -A 1 --color keyword /path/to/file
+```
+
 ## Materials
 
 https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html

@@ -36,3 +36,12 @@ gem install puma:4.3.5 -- --with-cflags="-Wno-error=implicit-function-declaratio
 ```
 
 Ref: https://github.com/puma/puma/issues/2304
+
+
+## Bundle
+
+Invoke bundle commands outside of a project:
+
+```
+BUNDLE_GEMFILE=PATH_TO_GEMFILE bundle exec rails new --api foo
+```
