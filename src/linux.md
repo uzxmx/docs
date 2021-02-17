@@ -320,3 +320,18 @@ can run `stty sane` to restore terminal settings.
 
 * http://crosstool-ng.github.io/docs/
 * https://releases.linaro.org/components/toolchain/binaries/
+
+## Kernel modules
+
+```
+# Check which modules are loaded
+lsmod
+
+# or
+cat /proc/modules
+```
+
+```
+modinfo vboxsf
+modinfo ip_tables
+```

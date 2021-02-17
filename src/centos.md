@@ -72,6 +72,16 @@ Find out which package owns some command:
 yum whatprovides '*bin/dig'
 ```
 
+### yum group
+
+```
+yum group list
+yum group list hidden
+yum group info "GNOME Desktop"
+yum group info "X Window System"
+yum group install "GNOME Desktop"
+```
+
 ## rpm
 
 ### List files in an RPM file

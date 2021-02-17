@@ -66,12 +66,16 @@ https://engineering.bitnami.com/articles/running-non-root-containers-on-openshif
 ## kubectl run a pod on the fly
 
 ```
+# https://busybox.net/downloads/BusyBox.html
 kubectl run -it busybox --image=busybox --restart=Never -- sh
 
 # Automatically delete pod after exit.
-kubectl run -it busybox --image=busybox --restart=Never --rm -- sh
+kubectl run -it busybox --image=busybox:1.32.0 --restart=Never --rm -- sh
 
-kubectl run -it alpine --image=alpine --restart=Never -- sh
+kubectl run -it alpine --image=alpine:3.12.0 --restart=Never -- sh
+# bind-tools provides utilities e.g. dig
+# apk add bind-tools
+
 kubectl run -it pgclient --image=postgres:11-alpine --restart=Never -- sh
 
 # Run a detached pod, so that we can attach to it anytime.

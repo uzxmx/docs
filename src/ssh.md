@@ -104,3 +104,16 @@ sudo /usr/sbin/sshd -d
 # Make sure three types (rsa, ecdsa, ed25519) of keys exist in /etc/ssh/.
 sudo ssh-kengen -t <type> -f /etc/ssh/ssh_host_<type>_key
 ```
+
+## Expose a private SSH server to public
+
+Use `autossh` to keep ssh client alive.
+
+The ssh option `-N` is required when only forwarding ports.
+
+```
+autossh -M 20000 -f user@host -R REMOTE_PORT:localhost:22 -N
+```
+
+Note: The remote ssh server must be configured with `GatewayPorts yes` when ssh
+client wants to bind to all remote interfaces.

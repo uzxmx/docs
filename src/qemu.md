@@ -1,7 +1,5 @@
 # QEMU
 
-Git revision: 1b46b4daa6fbf45eddcf77877379a0afac341df9
-
 ## Command line
 
 ```
@@ -13,6 +11,21 @@ Git revision: 1b46b4daa6fbf45eddcf77877379a0afac341df9
 # Run with custom system root.
 qemu-arm -L /opt/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi/arm-linux-gnueabi/libc a.out
 ```
+
+## Build qemu
+
+```
+# For Ubuntu
+sudo apt-get install -y pkg-config libglib2.0-dev libpixman-1-dev
+
+mkdir build
+cd build
+../configure --target-list="arm-softmmu arm-linux-user armeb-linux-user x86_64-softmmu x86_64-linux-user"
+```
+
+## Build qemu for windows on Linux
+
+Ref: https://wiki.qemu.org/Hosts/W32#Building_QEMU_for_W64
 
 ## QEMU for arm
 

@@ -79,3 +79,14 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -t nat -A PREROUTING -p tcp --dport 8388 -j DNAT --to-destination US_VPS_IP:8388
 iptables -t nat -A POSTROUTING -p tcp -d US_VPS_IP --dport 8388 -j SNAT --to-source JAPAN_VPS_IP
 ```
+
+## Service relay
+
+Must enable ip forwarding
+
+add `net.ipv4.ip_forward = 1` to /etc/sysctl.conf
+
+```
+sudo iptables -t nat -A PREROUTING -p tcp --dport 5432 -j DNAT --to-destination 10.0.1.236:31090
+sudo iptables -t nat -A POSTROUTING -p tcp -d 10.0.1.236 --dport 31090 -j MASQUERADE
+```

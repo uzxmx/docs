@@ -31,3 +31,19 @@ mvn help:describe -Dplugin=org.jacoco:jacoco-maven-plugin -Ddetail
 # Output will be saved in PROJECT_ROOT/target/surefire-reports/xxx-output.txt
 mvn test -Dmaven.test.redirectTestOutputToFile=true
 ```
+
+## Pass system properties to maven test
+
+Specify properties in command line as below:
+
+```
+# http://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#argLine
+mvn test -DargLine="-DpropertyName=propertyValue"
+```
+
+We can also add system properties in `maven-surefire-plugin` configuration
+section of `pom.xml`. Find examples
+[here](https://maven.apache.org/surefire/maven-surefire-plugin/examples/system-properties.html).
+
+If we want to pass environment variables to maven test, we can declare the
+environment variables in the same way as most linux commands.

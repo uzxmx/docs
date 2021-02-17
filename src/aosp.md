@@ -11,6 +11,7 @@ export REPO_URL='https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/'
 mkdir WORKING_DIRECTORY
 cd WORKING_DIRECTORY
 repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest
+repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-11.0.0_r8
 repo sync
 ```
 
@@ -35,11 +36,16 @@ Remember to run `source build/envsetup.sh && lunch` to choose a target when in a
 
 If your changes effect other applications, use make systemimage, otherwise use make snod.
 
-Notice: make systemimage will check dependency during compile progress, while make snod will not do this check, so the former command need more time than the latter.
+Notice: `make systemimage` will check dependency during compile progress, while `make snod` will not do this check, so the former command need more time than the latter.
 
-## How to create ramdisk.img
+## How to manage ramdisk.img
 
 ```
+# Extract (It's highly possible that ramdisk.img actually is a gzip file)
+cd a-clean-folder # e.g. a sub folder
+gunzip -c ../ramdisk.img | cpio -idm
+
+# Create
 cd path-to-ramdisk
 find . | cpio -o -Hnewc | gzip -9 > ../ramdisk.img
 ```
@@ -135,3 +141,125 @@ sudo launchctl limit maxfiles 2048 unlimited
 # Set both soft and hard limit to 2048
 sudo launchctl limit maxfiles 2048
 ```
+
+## Emulator
+
+```
+# Add custom kernel command parameter
+# Ref: https://www.kernel.org/doc/html/v4.14/admin-guide/kernel-parameters.html
+# https://developer.android.com/studio/run/emulator-commandline
+emulator -show-kernel @myavd1 -qemu -append printk.devkmsg=on >tmp1.log
+
+emulator @myavd1 -shell -shell-serial tcp::4444,server,nowait
+telnet localhost 4444
+
+# Show qemu options
+emulator -verbose
+
+# Root access
+adb root
+adb shell
+```
+
+### Cross compile emulator for Windows on Linux
+
+First, you need to have a Windows system to export the Windows SDK.
+
+`package_from_installed.py` exists under
+`$AOSP_DIR/external/qemu/android/third_party/chromium/depot_tools/win_toolchain`.
+It can also be found at
+`https://chromium.googlesource.com/chromium/tools/depot_tools/+/master/win_toolchain/`.
+
+```
+# Go to C:\Program Files (x86)\Windows Kits\10\Include to find a desired windows
+# SDK version.
+#
+# And specify the visual studio version which is installed on your system (the
+# script supports VS 2015 and 2017).
+python.exe package_from_installed.py -w YOUR_WINDOWS_SDK_VERSION 2015|2017
+```
+
+A {hash}.zip file will be generated under your current working directory. Move
+that file to the build machine.
+
+### WIP
+
+```
+export DEPOT_TOOLS_WIN_TOOLCHAIN_BASE_URL=~/win_toolchain
+
+./rebuild.sh --target=windows --no-tests
+```
+
+OR
+
+```
+$AOSP_DIR/prebuilts/android-emulator-build/common/ciopfs/linux-x86_64/ciopfs -o use_ino $DATA_POINT $MOUNT_POINT
+
+# The backing file system should be case-insensitive.
+export OPT_VSDIR=
+
+./rebuild.sh --target=windows --no-tests
+```
+
+## Repo
+
+* list available branches
+
+https://stackoverflow.com/questions/2874347/how-to-display-available-branches-in-android-source-tree
+https://android.googlesource.com/platform/manifest
+
+https://source.android.com/setup/develop/repo
+
+* Only single branch is fetched, if you want to change to another branch, you
+  must redo a `repo init` with specific branch
+
+## Kernel
+
+https://source.android.com/setup/build/building-kernels
+
+### What happens if I unlock bootloader?
+
+Android mobile manufacturers are very serious about security so they have
+purposefully shipped devices with a locked bootloader. But users have the option
+to manually unlock it. Once you unlock your device’s bootloader, you can do all
+types of customization like installing Custom ROMs, recovery and MODs but you
+will lose the warranty too.
+
+### How to unlock the bootloader of an Android phone?
+
+Unlocking bootloader will wipe all of your data in the phone, and the phone will
+be reset into factory mode.
+
+```
+# Connect the phone to PC via USB and reboot it into bootloader mode.
+adb reboot bootloader
+
+# After entering into bootloader mode, unlock the bootloader.
+# It may ask for your confirmation, you may need to use volume button to select
+# yes or no.
+#
+# `fastboot` executable is in the same bundle `platform-tools` as `adb`.
+fastboot oem unlock
+
+# What does this do?
+fastboot flashing unlock
+
+# After unlocking, reboot the phone. The phone may restart several times, and
+# finally guide you to reinitialize the phone.
+fastboot reboot
+
+fastboot unlock-info?
+```
+
+## How to install TWRP recovery.img?
+
+```
+fastboot flash recovery recovery.img
+fastboot boot recovery.img
+```
+
+There are three boot modes:
+
+* Recovery mode
+* Fastboot (bootloader) mode
+* Normal mode

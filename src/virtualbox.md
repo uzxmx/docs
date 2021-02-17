@@ -10,3 +10,15 @@ vmware-vdiskmanager -R <your_disk>.vmdk
 ```
 
 Ref: https://serverfault.com/questions/324271/virtualbox-grain-table-inconsistency/575058#575058
+
+## Commands
+
+```
+VBoxManage.exe -h
+
+VBoxManage.exe startvm <vm_name>
+VBoxManage.exe startvm <vm_name> --type headless
+VBoxManage.exe controlvm <vm_name> poweroff
+
+VBoxManage.exe list bridgedifs
+```
